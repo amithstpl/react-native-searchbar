@@ -46,7 +46,6 @@ export default class Search extends Component {
     hideBack: PropTypes.bool,
     hideX: PropTypes.bool,
     iOSPadding: PropTypes.bool,
-    iOSPaddingBackgroundColor: PropTypes.string,
     iOSHideShadow: PropTypes.bool,
     clearOnShow: PropTypes.bool,
     clearOnHide: PropTypes.bool,
@@ -77,7 +76,6 @@ export default class Search extends Component {
     hideBack: false,
     hideX: false,
     iOSPadding: true,
-    iOSPaddingBackgroundColor: 'transparent',
     iOSHideShadow: false,
     clearOnShow: false,
     clearOnHide: true,
@@ -108,8 +106,8 @@ export default class Search extends Component {
     return this.state.input;
   };
 
-  setValue = (input) => {
-    return this.setState({input})
+  setValue = (text) => {
+    this.setState({input:text});
   };
 
   show = () => {
@@ -234,7 +232,6 @@ export default class Search extends Component {
       hideBack,
       hideX,
       iOSPadding,
-      iOSPaddingBackgroundColor,
       iOSHideShadow,
       onSubmitEditing,
       onFocus,
@@ -256,18 +253,14 @@ export default class Search extends Component {
         style={[
           styles.container,
           {
-            transform: [
-              {
-                translateY: this.state.top
-              }
-            ],
-            shadowOpacity: iOSHideShadow ? 0 : 0.7
+            top: this.state.top,
+            shadowOpacity: iOSHideShadow ? 0 : 0
           }
         ]}>
         {this.state.show && (
           <View style={[styles.navWrapper, { backgroundColor }]}>
             {Platform.OS === 'ios' &&
-              iOSPadding && <View style={{ height: 20, backgroundColor: iOSPaddingBackgroundColor }} />}
+              iOSPadding && <View style={{ height: 20 }} />}
             <View
               style={[
                 styles.nav,
@@ -305,7 +298,7 @@ export default class Search extends Component {
                     fontSize: fontSize,
                     color: textColor,
                     fontFamily: fontFamily,
-                    marginLeft: hideBack ? 30 : 0,
+                    marginLeft: hideBack ? 0 : 0,
                     marginTop: Platform.OS === 'ios' ? heightAdjust / 2 + 10 : 0
                   }
                 ]}
@@ -329,6 +322,7 @@ export default class Search extends Component {
                 accessible={true}
                 accessibilityComponentType="button"
                 accessibilityLabel={closeButtonAccessibilityLabel}
+                style={{alignItems:'center',justifyContent:'center'}}
                 onPress={
                   hideX || this.state.input === '' ? null : this._handleX
                 }>
@@ -345,7 +339,7 @@ export default class Search extends Component {
                         hideX || this.state.input == ''
                           ? backgroundColor
                           : iconColor,
-                      padding: heightAdjust / 2 + 10
+                          marginBottom: (Platform.OS=='ios') ? 10 : 0
                     }}
                   />
                 )}
@@ -361,13 +355,11 @@ export default class Search extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    zIndex: 10,
-    position: 'absolute',
-    elevation: 2,
-    shadowRadius: 5
+    borderRadius : 20, 
   },
   navWrapper: {
-    width: Dimensions.get('window').width
+    flex:1,
+    marginRight:10
   },
   nav: {
     ...Platform.select({
@@ -385,7 +377,8 @@ const styles = StyleSheet.create({
   input: {
     ...Platform.select({
       ios: { height: 30 },
-      android: { height: 50 }
+      android: { height: 50 },
+		borderRadius : 10, 
     }),
     width: Dimensions.get('window').width - 120
   }
